@@ -21,6 +21,10 @@
             <i class="fa-solid fa-lock"></i>
             Changer mot de passe
         </a>
+        <a href="auth/logout.php" class="dashboard-link">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Déconnexion
+        </a>
 
     </nav>
 
