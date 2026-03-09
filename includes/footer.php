@@ -26,13 +26,13 @@
             <h2>NOS PRESTATIONS</h2>
             <ul class="prestations">
                 <li>
-                    <a href="audit.php">Audit de site</a>
+                    <a href="service.php?id=1">Audit de site</a>
                 </li>
                 <li>
-                    <a href="/accompagnement.php">Accompagnement digital</a>
+                    <a href="service.php?id=2">Accompagnement digital</a>
                 </li>
                 <li>
-                    <a href="atelier.php">Atelier initiation web</a>
+                    <a href="service.php?id=3">Atelier initiation web</a>
                 </li>
             </ul>
         </div>

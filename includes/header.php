@@ -28,9 +28,9 @@
 
             <!-- NAV DESKTOP -->
             <nav class="nav nav--desktop">
-                <a class="nav__link" href="audit.php">Audit de site</a>
-                <a class="nav__link" href="accompagnement.php">Accompagnement web</a>
-                <a class="nav__link" href="atelier.php">Atelier découverte</a>
+                <a class="nav__link" href="service.php?id=1">Audit de site</a>
+                <a class="nav__link" href="service.php?id=2">Accompagnement web</a>
+                <a class="nav__link" href="service.php?id=3">Atelier découverte</a>
             </nav>
 
             <!-- ACTIONS DESKTOP -->
@@ -52,9 +52,9 @@
         <!-- MENU MOBILE -->
         <div class="mobile-menu" id="mobile-menu" hidden>
             <nav class="nav nav--mobile">
-                <a class="nav__link" href="audit.php">Audit de site</a>
-                <a class="nav__link" href="accompagnement.php">Accompagnement web</a>
-                <a class="nav__link" href="atelier.php">Atelier découverte</a>
+                <a class="nav__link" href="service.php?id=1">Audit de site</a>
+                <a class="nav__link" href="service.php?id=2">Accompagnement web</a>
+                <a class="nav__link" href="service.php?id=3">Atelier découverte</a>
 
                 <div class="mobile-actions">
                     <a class="btn btn--ghost" href="register.php">S’inscrire</a>

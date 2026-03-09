@@ -1,3 +1,11 @@
+<?php
+require_once 'config/database.php';
+
+$sql = "SELECT id, title, description, duration FROM services ORDER BY id ASC";
+$stmt = $pdo->query($sql);
+$services = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <?php include 'includes/header.php'; ?>
 
 <section class="hero">
@@ -9,43 +17,26 @@
                 <p>Book & Go vous permet de réserver simplement des prestations adaptées aux artisans et entreprises locales : analyse de votre site, accompagnement stratégique ou ateliers concrets pour développer votre visibilité en ligne.</p>
             </div>
             <div class="hero-actions">
-                <a href="audit.php" class="btn btn--secondary">Audit de site</a>
-                <a href="accompagnement.php" class="btn btn--secondary">Accompagnement digital</a>
-                <a href="atelier.php" class="btn btn--secondary">Atelier découverte</a>
+                <a href="service.php?id=1" class="btn btn--secondary">Audit de site</a>
+                <a href="service.php?id=2" class="btn btn--secondary">Accompagnement digital</a>
+                <a href="service.php?id=3" class="btn btn--secondary">Atelier découverte</a>
             </div>
         </div>
     </div>
 </section>
 <section class="cards">
-    <div class="card">
-        <div class="header--presta">
-            <img src="./assets/images/logo-bookandgo.webp" alt="logo book and go">
-            <h3>AUDIT DE SITE WEB</h3>
+    <?php foreach ($services as $service): ?>
+        <div class="card">
+            <div class="header--presta">
+                <img src="./assets/images/logo-bookandgo.webp" alt="logo book and go">
+                <h3><?php echo htmlspecialchars(strtoupper($service['title'])); ?></h3>
+            </div>
+            <p>Durée : <?php echo htmlspecialchars($service['duration']); ?> min</p>
+            <p><?php echo htmlspecialchars($service['description']); ?></p>
+            <a href="service.php?id=<?php echo $service['id']; ?>" class="btn btn--secondary">En savoir plus</a>
         </div>
-        <p>Durée : 1h</p>
-        <p>Analyse complète de votre site internet existant avec recommandations d’amélioration sur le design, les performances et la visibilité en ligne. Cette prestation permet d’identifier les points faibles et d’optimiser votre présence digitale.</p>
-        <a href="audit.php" class="btn btn--secondary">En savoir plus</a>
-    </div>
+    <?php endforeach; ?>
 
-    <div class="card">
-        <div class="header--presta">
-            <img src="./assets/images/logo-bookandgo.webp" alt="logo book and go">
-            <h3>ACCOMPAGNEMENT DIGITAL</h3>
-        </div>
-        <p>Durée : 1h</p>
-        <p>Session personnalisée destinée à vous accompagner dans la création ou l’amélioration de votre projet web. Ensemble, nous travaillons sur vos objectifs numériques, votre organisation et les solutions adaptées à vos besoins.</p>
-        <a href="accompagnement.php" class="btn btn--secondary">En savoir plus</a>
-    </div>
-
-    <div class="card">
-        <div class="header--presta">
-            <img src="./assets/images/logo-bookandgo.webp" alt="logo book and go">
-            <h3>ATELIER INITIATION WEB</h3>
-        </div>
-        <p>Durée : 2h</p>
-        <p>Atelier pratique pour découvrir les bases du web (HTML, CSS et outils numériques). Idéal pour comprendre le fonctionnement d’un site internet et acquérir les premières compétences essentielles.</p>
-        <a href="atelier.php" class="btn btn--secondary">En savoir plus</a>
-    </div>
 </section>
 
 <?php include 'includes/footer.php'; ?>

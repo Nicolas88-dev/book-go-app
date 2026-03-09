@@ -420,7 +420,11 @@ video {
 /* ======================== */
 /* ===== Service page ===== */
 /* ======================== */
-
+.breadcrumb a{
+    text-decoration: none;
+    color: inherit;
+    font-weight: bold;
+}
 .service-content {
     padding: 10px;
     border-radius: 14px;
