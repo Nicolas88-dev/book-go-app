@@ -34,5 +34,7 @@ $stmt->execute([
     'notes' => $notes
 ]);
 
-header('Location: confirmation.php');
+$reservationId = $pdo->lastInsertId();
+
+header("Location: confirmation.php?id=" . $reservationId);
 exit;
