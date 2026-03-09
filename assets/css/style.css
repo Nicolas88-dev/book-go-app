@@ -807,6 +807,36 @@ video {
     background: #d62828;
 }
 
+.status.pending {
+    background: #f59e0b;
+}
+
+.table-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-table {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: #FED141;
+    color: #000;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.btn-table:hover {
+    opacity: 0.9;
+}
+
+.btn-table--danger {
+    background: #d62828;
+    color: #fff;
+}
+
 /* ====================== */
 /* ===== Responsive ===== */
 /* ====================== */

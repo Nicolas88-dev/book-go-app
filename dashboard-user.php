@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'config/database.php';
 
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
@@ -9,6 +10,33 @@ if (!isset($_SESSION['user'])) {
 if ($_SESSION['user']['role'] !== 'user' && $_SESSION['user']['role'] !== 'admin') {
     header('Location: login.php');
     exit;
+}
+
+$userId = $_SESSION['user']['id'];
+
+/* Récupérer les réservations de l'utilisateur */
+$sql = "SELECT reservations.*, services.title
+        FROM reservations
+        JOIN services ON reservations.service_id = services.id
+        WHERE reservations.user_id = :user_id
+        ORDER BY reservations.reservation_date ASC, reservations.reservation_time ASC";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute(['user_id' => $userId]);
+
+$reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+/* Trouver le prochain rendez-vous */
+$nextReservation = null;
+$currentDateTime = date('Y-m-d H:i:s');
+
+foreach ($reservations as $reservation) {
+    $reservationDateTime = $reservation['reservation_date'] . ' ' . $reservation['reservation_time'];
+
+    if ($reservationDateTime >= $currentDateTime) {
+        $nextReservation = $reservation;
+        break;
+    }
 }
 ?>
 
@@ -25,13 +53,21 @@ if ($_SESSION['user']['role'] !== 'user' && $_SESSION['user']['role'] !== 'admin
             <h1>Mes réservations</h1>
 
             <div class="next-booking-card">
-
                 <h3>PROCHAIN RENDEZ-VOUS</h3>
 
-                <p class="booking-title">Audit de site web</p>
+                <?php if ($nextReservation): ?>
+                    <p class="booking-title">
+                        <?php echo htmlspecialchars($nextReservation['title']); ?>
+                    </p>
 
-                <p class="booking-date">10 mars 2026 à 10:30</p>
-
+                    <p class="booking-date">
+                        <?php echo htmlspecialchars($nextReservation['reservation_date']); ?>
+                        à
+                        <?php echo htmlspecialchars($nextReservation['reservation_time']); ?>
+                    </p>
+                <?php else: ?>
+                    <p>Aucun rendez-vous à venir</p>
+                <?php endif; ?>
             </div>
 
             <div class="history-card">
@@ -50,35 +86,38 @@ if ($_SESSION['user']['role'] !== 'user' && $_SESSION['user']['role'] !== 'admin
                     </thead>
 
                     <tbody>
+                        <?php if (!empty($reservations)): ?>
+                            <?php foreach ($reservations as $reservation): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($reservation['reservation_date']); ?></td>
+                                    <td><?php echo htmlspecialchars($reservation['reservation_time']); ?></td>
+                                    <td><?php echo htmlspecialchars($reservation['title']); ?></td>
+                                    <td>
+                                        <?php
+                                        $statusClass = '';
 
-                        <tr>
-                            <td>10 mars 2026</td>
-                            <td>10:30</td>
-                            <td>Audit de site web</td>
-                            <td><span class="status confirmed">Confirmé</span></td>
-                        </tr>
+                                        if ($reservation['status'] === 'En attente') {
+                                            $statusClass = 'pending';
+                                        } elseif ($reservation['status'] === 'Confirmée') {
+                                            $statusClass = 'confirmed';
+                                        } elseif ($reservation['status'] === 'Terminée') {
+                                            $statusClass = 'done';
+                                        } elseif ($reservation['status'] === 'Annulée') {
+                                            $statusClass = 'cancelled';
+                                        }
+                                        ?>
 
-                        <tr>
-                            <td>17 février 2026</td>
-                            <td>15:00</td>
-                            <td>Accompagnement digital</td>
-                            <td><span class="status done">Terminée</span></td>
-                        </tr>
-
-                        <tr>
-                            <td>5 février 2026</td>
-                            <td>10:30</td>
-                            <td>Atelier initiation web</td>
-                            <td><span class="status done">Terminée</span></td>
-                        </tr>
-
-                        <tr>
-                            <td>21 janvier 2026</td>
-                            <td>13:30</td>
-                            <td>Audit de site web</td>
-                            <td><span class="status cancelled">Annulée</span></td>
-                        </tr>
-
+                                        <span class="status <?php echo $statusClass; ?>">
+                                            <?php echo htmlspecialchars($reservation['status']); ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="4">Aucune réservation pour le moment.</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
 
                 </table>

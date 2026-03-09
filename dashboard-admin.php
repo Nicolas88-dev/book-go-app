@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'config/database.php';
 
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
@@ -10,6 +11,16 @@ if ($_SESSION['user']['role'] !== 'admin') {
     header('Location: login.php');
     exit;
 }
+
+/* Récupérer toutes les réservations */
+$sql = "SELECT reservations.*, users.firstname, users.lastname, users.email, services.title
+        FROM reservations
+        JOIN users ON reservations.user_id = users.id
+        JOIN services ON reservations.service_id = services.id
+        ORDER BY reservations.reservation_date ASC, reservations.reservation_time ASC";
+
+$stmt = $pdo->query($sql);
+$reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <?php include 'includes/header.php'; ?>
@@ -37,74 +48,63 @@ if ($_SESSION['user']['role'] !== 'admin') {
                             <th>Utilisateur</th>
                             <th>Prestation</th>
                             <th>Statut</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td>15</td>
-                            <td>10 mars 2026</td>
-                            <td>10:30</td>
-                            <td>
-                                Nicolas Lestrez<br>
-                                <small>nicolas.lestrez@orange.fr</small>
-                            </td>
-                            <td>Audit de site web</td>
-                            <td>
-                                <span class="status confirmed">Confirmée</span>
-                                <span class="status done">Terminée</span>
-                                <span class="status cancelled">Annulée</span>
-                            </td>
-                        </tr>
+                        <?php if (!empty($reservations)): ?>
+                            <?php foreach ($reservations as $reservation): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($reservation['id']); ?></td>
 
-                        <tr>
-                            <td>14</td>
-                            <td>17 février 2026</td>
-                            <td>15:00</td>
-                            <td>
-                                Nicolas Lestrez<br>
-                                <small>nicolas.lestrez@orange.fr</small>
-                            </td>
-                            <td>Accompagnement digital</td>
-                            <td>
-                                <span class="status confirmed">Confirmée</span>
-                                <span class="status done">Terminée</span>
-                                <span class="status cancelled">Annulée</span>
-                            </td>
-                        </tr>
+                                    <td><?php echo htmlspecialchars($reservation['reservation_date']); ?></td>
 
-                        <tr>
-                            <td>13</td>
-                            <td>5 février 2026</td>
-                            <td>10:30</td>
-                            <td>
-                                Nicolas Lestrez<br>
-                                <small>nicolas.lestrez@orange.fr</small>
-                            </td>
-                            <td>Atelier initiation web</td>
-                            <td>
-                                <span class="status confirmed">Confirmée</span>
-                                <span class="status done">Terminée</span>
-                                <span class="status cancelled">Annulée</span>
-                            </td>
-                        </tr>
+                                    <td><?php echo htmlspecialchars($reservation['reservation_time']); ?></td>
 
-                        <tr>
-                            <td>12</td>
-                            <td>21 janvier 2026</td>
-                            <td>13:30</td>
-                            <td>
-                                Nicolas Lestrez<br>
-                                <small>nicolas.lestrez@orange.fr</small>
-                            </td>
-                            <td>Audit de site web</td>
-                            <td>
-                                <span class="status confirmed">Confirmée</span>
-                                <span class="status done">Terminée</span>
-                                <span class="status cancelled">Annulée</span>
-                            </td>
-                        </tr>
+                                    <td>
+                                        <?php echo htmlspecialchars($reservation['firstname'] . ' ' . $reservation['lastname']); ?><br>
+                                        <small><?php echo htmlspecialchars($reservation['email']); ?></small>
+                                    </td>
+
+                                    <td><?php echo htmlspecialchars($reservation['title']); ?></td>
+
+                                    <td>
+                                        <?php
+                                        $statusClass = '';
+
+                                        if ($reservation['status'] === 'En attente') {
+                                            $statusClass = 'pending';
+                                        } elseif ($reservation['status'] === 'Confirmée') {
+                                            $statusClass = 'confirmed';
+                                        } elseif ($reservation['status'] === 'Terminée') {
+                                            $statusClass = 'done';
+                                        } elseif ($reservation['status'] === 'Annulée') {
+                                            $statusClass = 'cancelled';
+                                        }
+                                        ?>
+
+                                        <span class="status <?php echo $statusClass; ?>">
+                                            <?php echo htmlspecialchars($reservation['status']); ?>
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div class="table-actions">
+                                            <a class="btn-table" href="update-reservation-status.php?id=<?php echo $reservation['id']; ?>&status=Confirmée">Confirmer</a>
+                                            <a class="btn-table" href="update-reservation-status.php?id=<?php echo $reservation['id']; ?>&status=Terminée">Terminée</a>
+                                            <a class="btn-table btn-table--danger" href="update-reservation-status.php?id=<?php echo $reservation['id']; ?>&status=Annulée">Annuler</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="6">Aucune réservation enregistrée.</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
+
                 </table>
             </div>
         </div>
