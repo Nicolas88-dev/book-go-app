@@ -46,7 +46,7 @@ foreach ($reservations as $reservation) {
 
     <div class="dashboard-container">
 
-        <?php include 'partials/dashboard-sidebar.php'; ?>
+        <?php include 'partials/dashboard-sidebar-user.php'; ?>
 
         <div class="dashboard-content">
 

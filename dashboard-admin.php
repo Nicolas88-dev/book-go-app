@@ -28,7 +28,7 @@ $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <section class="dashboard">
     <div class="dashboard-container">
 
-        <?php include 'partials/dashboard-sidebar.php'; ?>
+        <?php include 'partials/dashboard-sidebar-admin.php'; ?>
 
         <div class="dashboard-content">
             <h1>Tableau de bord administrateur</h1>
