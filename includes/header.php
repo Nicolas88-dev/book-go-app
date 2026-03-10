@@ -1,4 +1,7 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 // includes/header.php
 ?>
 <!DOCTYPE html>
@@ -66,3 +69,8 @@
     </header>
 
     <main class="main-content">
+
+        <?php
+        require_once __DIR__ . '/flash.php';
+        displayFlash();
+        ?>

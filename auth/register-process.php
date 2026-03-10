@@ -1,9 +1,13 @@
 <?php
 
+session_start();
 require_once '../config/database.php';
+require_once '../includes/flash.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    die('Méthode non autorisée.');
+    setFlash('error', 'Méthode non autorisée.');
+    header('Location: ../register.php');
+    exit;
 }
 
 $lastname = trim($_POST['lastname'] ?? '');
@@ -19,19 +23,27 @@ if (
     empty($password) ||
     empty($confirmPassword)
 ) {
-    die('Tous les champs sont obligatoires.');
+    setFlash('error', 'Tous les champs sont obligatoires.');
+    header('Location: ../register.php');
+    exit;
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    die('Adresse e-mail invalide.');
+    setFlash('error', 'Adresse e-mail invalide.');
+    header('Location: ../register.php');
+    exit;
 }
 
 if ($password !== $confirmPassword) {
-    die('Les mots de passe ne correspondent pas.');
+    setFlash('error', 'Les mots de passe ne correspondent pas.');
+    header('Location: ../register.php');
+    exit;
 }
 
 if (strlen($password) < 8) {
-    die('Le mot de passe doit contenir au moins 8 caractères.');
+    setFlash('error', 'Le mot de passe doit contenir au moins 8 caractères.');
+    header('Location: ../register.php');
+    exit;
 }
 
 /* Vérifier si l'email existe déjà */
@@ -40,7 +52,9 @@ $checkStmt = $pdo->prepare($checkSql);
 $checkStmt->execute(['email' => $email]);
 
 if ($checkStmt->fetch()) {
-    die('Cette adresse e-mail est déjà utilisée.');
+    setFlash('error', 'Cette adresse e-mail est déjà utilisée.');
+    header('Location: ../register.php');
+    exit;
 }
 
 /* Hash du mot de passe */
@@ -59,5 +73,6 @@ $stmt->execute([
     'password' => $hashedPassword
 ]);
 
+setFlash('success', 'Compte créé avec succès. Vous pouvez maintenant vous connecter.');
 header('Location: ../login.php');
 exit;

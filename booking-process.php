@@ -2,13 +2,18 @@
 
 session_start();
 require_once 'config/database.php';
+require_once 'includes/flash.php';
 
 if (!isset($_SESSION['user'])) {
-    die('Vous devez être connecté pour réserver.');
+    setFlash('error', 'Vous devez être connecté pour réserver.');
+    header('Location: login.php');
+    exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    die('Méthode non autorisée.');
+    setFlash('error', 'Méthode non autorisée.');
+    header('Location: index.php');
+    exit;
 }
 
 $userId = $_SESSION['user']['id'];
@@ -18,9 +23,31 @@ $reservationTime = $_POST['reservation_time'] ?? null;
 $notes = trim($_POST['notes'] ?? '');
 
 if (empty($serviceId) || empty($reservationDate) || empty($reservationTime)) {
-    die('Tous les champs obligatoires doivent être remplis.');
+    setFlash('error', 'Tous les champs obligatoires doivent être remplis.');
+    header('Location: service.php?id=' . $serviceId);
+    exit;
 }
 
+/* Vérifier si le créneau est déjà réservé */
+$checkSql = "SELECT id FROM reservations
+             WHERE service_id = :service_id
+             AND reservation_date = :reservation_date
+             AND reservation_time = :reservation_time";
+
+$checkStmt = $pdo->prepare($checkSql);
+$checkStmt->execute([
+    'service_id' => $serviceId,
+    'reservation_date' => $reservationDate,
+    'reservation_time' => $reservationTime
+]);
+
+if ($checkStmt->fetch()) {
+    setFlash('error', 'Ce créneau est déjà réservé. Veuillez en choisir un autre.');
+    header('Location: service.php?id=' . $serviceId);
+    exit;
+}
+
+/* Insérer la réservation */
 $sql = "INSERT INTO reservations (user_id, service_id, reservation_date, reservation_time, notes)
         VALUES (:user_id, :service_id, :reservation_date, :reservation_time, :notes)";
 

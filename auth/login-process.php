@@ -2,20 +2,27 @@
 
 session_start();
 require_once '../config/database.php';
+require_once '../includes/flash.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    die('Méthode non autorisée.');
+    setFlash('error', 'Méthode non autorisée.');
+    header('Location: ../login.php');
+    exit;
 }
 
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 
 if (empty($email) || empty($password)) {
-    die('Tous les champs sont obligatoires.');
+    setFlash('error', 'Tous les champs sont obligatoires.');
+    header('Location: ../login.php');
+    exit;
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    die('Adresse e-mail invalide.');
+    setFlash('error', 'Adresse e-mail invalide.');
+    header('Location: ../login.php');
+    exit;
 }
 
 /* Rechercher l'utilisateur */
@@ -26,12 +33,16 @@ $stmt->execute(['email' => $email]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$user) {
-    die('Identifiants incorrects.');
+    setFlash('error', 'Identifiants incorrects.');
+    header('Location: ../login.php');
+    exit;
 }
 
 /* Vérifier le mot de passe */
 if (!password_verify($password, $user['password'])) {
-    die('Identifiants incorrects.');
+    setFlash('error', 'Identifiants incorrects.');
+    header('Location: ../login.php');
+    exit;
 }
 
 /* Créer la session */
