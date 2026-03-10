@@ -115,6 +115,18 @@ video {
     border: 1px solid #c3e6cb;
 }
 
+.user-greeting {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 600;
+    color: #0f172a;
+    margin-right: 6px;
+}
+
+.mobile-greeting {
+    margin-bottom: 10px;
+}
+
 /* =================== */
 /* ===== Buttons ===== */
 /* =================== */

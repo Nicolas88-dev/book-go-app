@@ -38,8 +38,26 @@ if (session_status() === PHP_SESSION_NONE) {
 
             <!-- ACTIONS DESKTOP -->
             <div class="header-actions header-actions--desktop">
-                <a class="btn btn--ghost" href="register.php">S’inscrire</a>
-                <a class="btn btn--primary" href="login.php">Se connecter</a>
+                <?php if (isset($_SESSION['user'])): ?>
+
+                    <span class="user-greeting">
+                        Bonjour, <?php echo htmlspecialchars($_SESSION['user']['firstname']); ?>
+                    </span>
+
+                    <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+                        <a class="btn btn--ghost" href="dashboard-admin.php">Dashboard admin</a>
+                    <?php else: ?>
+                        <a class="btn btn--ghost" href="dashboard-user.php">Mon espace</a>
+                    <?php endif; ?>
+
+                    <a class="btn btn--primary" href="auth/logout.php">Déconnexion</a>
+
+                <?php else: ?>
+
+                    <a class="btn btn--ghost" href="register.php">S’inscrire</a>
+                    <a class="btn btn--primary" href="login.php">Se connecter</a>
+
+                <?php endif; ?>
             </div>
 
             <!-- BOUTON BURGER MOBILE -->
@@ -60,8 +78,26 @@ if (session_status() === PHP_SESSION_NONE) {
                 <a class="nav__link" href="service.php?id=3">Atelier découverte</a>
 
                 <div class="mobile-actions">
-                    <a class="btn btn--ghost" href="register.php">S’inscrire</a>
-                    <a class="btn btn--primary" href="login.php">Se connecter</a>
+                    <?php if (isset($_SESSION['user'])): ?>
+
+                        <span class="user-greeting mobile-greeting">
+                            Bonjour, <?php echo htmlspecialchars($_SESSION['user']['firstname']); ?>
+                        </span>
+
+                        <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+                            <a class="btn btn--ghost" href="dashboard-admin.php">Dashboard admin</a>
+                        <?php else: ?>
+                            <a class="btn btn--ghost" href="dashboard-user.php">Mon espace</a>
+                        <?php endif; ?>
+
+                        <a class="btn btn--primary" href="auth/logout.php">Déconnexion</a>
+
+                    <?php else: ?>
+
+                        <a class="btn btn--ghost" href="register.php">S’inscrire</a>
+                        <a class="btn btn--primary" href="login.php">Se connecter</a>
+
+                    <?php endif; ?>
                 </div>
             </nav>
         </div>
