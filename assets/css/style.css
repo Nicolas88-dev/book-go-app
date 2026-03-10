@@ -35,64 +35,9 @@ video {
     display: flex;
 }
 
-/* ================== */
-/* ===== Header ===== */
-/* ================== */
-
-.site-header {
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.header-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    padding: 14px 0;
-}
-
-.brand {
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-    font-weight: 800;
-    letter-spacing: 0.2px;
-}
-
-.brand__name {
-    font-size: 20px;
-}
-
-.brand__logo {
-    display: block;
-    height: 36px;
-    width: auto;
-}
-
-.nav {
-    display: flex;
-    gap: 25px;
-}
-
-.nav__link {
-    text-decoration: none;
-    color: #334155;
-    font-weight: 200;
-}
-
-.nav__link:hover {
-    color: #0f172a;
-    text-decoration: underline;
-    text-decoration-color: #FED141;
-    text-underline-offset: 5px;
-}
-
-.header-actions {
-    display: flex;
-    gap: 10px;
-}
+/* ======================= */
+/* ===== UI Messages ===== */
+/* ======================= */
 
 .flash {
     padding: 12px 16px;
@@ -127,6 +72,64 @@ video {
     margin-bottom: 10px;
 }
 
+/* ================== */
+/* ===== Header ===== */
+/* ================== */
+
+.site-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 0;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+}
+
+
+.brand__logo {
+    display: block;
+    height: 36px;
+    width: auto;
+}
+
+.nav {
+    display: flex;
+    gap: 25px;
+}
+
+.nav__link {
+    text-decoration: none;
+    color: #334155;
+    font-weight: 200;
+}
+
+.nav__link:hover {
+    color: #0f172a;
+    text-decoration: underline;
+    text-decoration-color: #FED141;
+    text-underline-offset: 5px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+
+
 /* =================== */
 /* ===== Buttons ===== */
 /* =================== */
@@ -154,7 +157,7 @@ video {
 
 .btn--primary {
     background: #FED141;
-    border-color: #FED141;
+    border: 1px solid #FED141;
     color: #0f172a;
 }
 
@@ -270,19 +273,6 @@ video {
     margin: 2px 0;
 }
 
-.card button {
-    align-self: center;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background: #ffc107;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.card button:hover {
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.332);
-}
 
 .header--presta {
     display: flex;
