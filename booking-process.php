@@ -28,6 +28,24 @@ if (empty($serviceId) || empty($reservationDate) || empty($reservationTime)) {
     exit;
 }
 
+/* Vérifier que la date n'est pas dans le passé */
+$today = date('Y-m-d');
+
+if ($reservationDate < $today) {
+    setFlash('error', 'Impossible de réserver une date passée.');
+    header('Location: service.php?id=' . $serviceId);
+    exit;
+}
+
+/* Vérifier l'heure si la réservation est aujourd'hui */
+$currentTime = date('H:i');
+
+if ($reservationDate === $today && $reservationTime < $currentTime) {
+    setFlash('error', 'Ce créneau est déjà passé.');
+    header('Location: service.php?id=' . $serviceId);
+    exit;
+}
+
 /* Vérifier si le créneau est déjà réservé */
 $checkSql = "SELECT id FROM reservations
              WHERE service_id = :service_id
