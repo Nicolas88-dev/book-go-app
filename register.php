@@ -5,7 +5,7 @@
             <h2>Accédez à votre espace</h2>
 
             <div class="tabs">
-                <a class="tabs-link" href="booking-guest.php">Connexion</a>
+                <a class="tabs-link" href="login.php">Connexion</a>
                 <a class="tabs-link" href="register.php">Inscription</a>
             </div>
             <?php include 'partials/form-register.php'; ?>

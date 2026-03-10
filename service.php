@@ -43,6 +43,43 @@ $serviceExtras = [
 
 $extra = $serviceExtras[$serviceId] ?? null;
 
+/* Génération dynamique des créneaux selon la durée */
+
+$slotDuration = (int) $service['duration'];
+$buffer = 30; // temps tampon entre deux prestations
+$totalSlotTime = $slotDuration + $buffer;
+
+$availableSlots = [];
+
+function generateSlots($start, $end, $slotDuration, $buffer)
+{
+    $slots = [];
+
+    $current = new DateTime($start);
+    $endTime = new DateTime($end);
+
+    while (true) {
+        $slotStart = clone $current;
+        $slotEnd = clone $slotStart;
+        $slotEnd->modify("+{$slotDuration} minutes");
+
+        if ($slotEnd > $endTime) {
+            break;
+        }
+
+        $slots[] = $slotStart->format('H:i');
+
+        $current->modify("+" . ($slotDuration + $buffer) . " minutes");
+    }
+
+    return $slots;
+}
+
+$morningSlots = generateSlots('09:00', '12:00', $slotDuration, $buffer);
+$afternoonSlots = generateSlots('13:30', '18:30', $slotDuration, $buffer);
+
+$availableSlots = array_merge($morningSlots, $afternoonSlots);
+
 if (!$service) {
     die('Prestation introuvable.');
 }

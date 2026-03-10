@@ -14,11 +14,13 @@
             <label for="reservation_time">Créneau horaire</label>
             <select id="reservation_time" name="reservation_time" required>
                 <option value="">Choisir…</option>
-                <option value="09:00">09:00</option>
-                <option value="10:00">10:00</option>
-                <option value="11:00">11:00</option>
-                <option value="14:00">14:00</option>
-                <option value="15:00">15:00</option>
+
+                <?php foreach ($availableSlots as $slot): ?>
+                    <option value="<?php echo $slot; ?>">
+                        <?php echo $slot; ?>
+                    </option>
+                <?php endforeach; ?>
+
             </select>
         </div>
 
