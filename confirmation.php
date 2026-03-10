@@ -1,25 +1,65 @@
 <?php
-
+session_start();
 require_once 'config/database.php';
+require_once 'includes/flash.php';
+
+if (!isset($_SESSION['user'])) {
+    setFlash('error', 'Vous devez être connecté pour accéder à cette page.');
+    header('Location: login.php');
+    exit;
+}
 
 $reservationId = $_GET['id'] ?? null;
 
-if (!$reservationId) {
-    die('Réservation introuvable.');
+$userId = $_SESSION['user']['id'];
+$userRole = $_SESSION['user']['role'];
+
+if (!$reservationId || !is_numeric($reservationId)) {
+    setFlash('error', 'Réservation introuvable.');
+
+    if ($userRole === 'admin') {
+        header('Location: dashboard-admin.php');
+    } else {
+        header('Location: dashboard-user.php');
+    }
+
+    exit;
 }
 
-$sql = "SELECT reservations.*, services.title
-        FROM reservations
-        JOIN services ON reservations.service_id = services.id
-        WHERE reservations.id = :id";
+if ($userRole === 'admin') {
+    $sql = "SELECT reservations.*, services.title
+            FROM reservations
+            JOIN services ON reservations.service_id = services.id
+            WHERE reservations.id = :id";
 
-$stmt = $pdo->prepare($sql);
-$stmt->execute(['id' => $reservationId]);
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['id' => $reservationId]);
+} else {
+    $sql = "SELECT reservations.*, services.title
+            FROM reservations
+            JOIN services ON reservations.service_id = services.id
+            WHERE reservations.id = :id
+            AND reservations.user_id = :user_id";
 
-$reservation = $stmt->fetch();
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        'id' => $reservationId,
+        'user_id' => $userId
+    ]);
+}
+
+$reservation = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$reservation) {
-    die('Réservation introuvable.');
+    setFlash('error', 'Vous ne pouvez pas accéder à cette réservation.');
+
+    if ($userRole === 'admin') {
+        header('Location: dashboard-admin.php');
+    } else {
+        header('Location: dashboard-user.php');
+    }
+
+    exit;
 }
 ?>
 
@@ -35,8 +75,7 @@ if (!$reservation) {
             <h2>Votre réservation est confirmée</h2>
 
             <p class="confirm-text">
-                Tout est prêt. Un email de confirmation vient de vous être envoyé
-                avec tous les détails de votre rendez-vous.
+                Tout est prêt. Votre réservation a bien été enregistrée avec tous les détails de votre rendez-vous.
             </p>
 
             <div class="confirm-details">
@@ -66,7 +105,12 @@ if (!$reservation) {
             </div>
 
             <div class="confirm-actions">
-                <a class="btn-confirm" href="dashboard-user.php">VOIR MES RÉSERVATIONS</a>
+                <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+                    <a class="btn-confirm" href="dashboard-admin.php">VOIR LE DASHBOARD ADMIN</a>
+                <?php else: ?>
+                    <a class="btn-confirm" href="dashboard-user.php">VOIR MES RÉSERVATIONS</a>
+                <?php endif; ?>
+
                 <a class="btn-confirm" href="index.php">RETOUR À L’ACCUEIL</a>
             </div>
         </div>
