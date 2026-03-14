@@ -92,7 +92,6 @@ book-go-app/
 │   ├── booking-guest.php
 │   ├── dashboard-sidebar-admin.php
 │   ├── dashboard-sidebar-user.php
-│   ├── dashboard-sidebar.php
 │   ├── form-login.php
 │   └── form-register.php
 │
